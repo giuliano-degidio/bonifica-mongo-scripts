@@ -1,1 +1,0 @@
-# bonifica-mongo-scripts
