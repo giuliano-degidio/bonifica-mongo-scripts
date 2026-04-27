@@ -4,13 +4,13 @@
   "tools": {
     "mongoshPath": "/data/mongosh/bin/mongosh"
   },
-  "paths": {
-    "baseDir": "/data/Mongo_Sh_Script",
-    "scriptsDir": "/data/Mongo_Sh_Script",
-    "expDir": "/data/Mongo_Sh_Script/EXP",
-    "logsDir": "/data/Mongo_Sh_Script/logs",
-    "stateDir": "/data/Mongo_Sh_Script/state"
-  },
+   "paths": {
+  "baseDir": ".",
+  "scriptsDir": "./scripts",
+  "expDir": "./EXP",
+  "logsDir": "./logs",
+  "stateDir": "./state"
+   },
   "settings": {
     "stopOnError": true,
     "locking": true,
