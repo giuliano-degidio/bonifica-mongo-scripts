@@ -1,0 +1,9 @@
+# Output e stato runtime
+EXP/
+logs/
+state/
+
+# OS/editor
+.DS_Store
+*.swp
+*.tmp
