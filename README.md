@@ -156,3 +156,48 @@ cat ./state/pipeline_all_script/k8s-bonifica/latest_run.json
 # sostituisci <runId>
 grep -n "STEP_FAILED\|STEP_ERROR\|STOP_ON_ERROR" ./logs/pipeline_all_script/k8s-bonifica/<runId>/master.log
 ```
+### Copiare la cartella `Mongo_Sh_Script\lib` da Windows al pod Ubuntu su Kubernetes (`kubectl cp`)
+
+Esempio da **PowerShell** per copiare `.\lib` dentro `/data/Mongo_Sh_Script` nel pod.
+
+```powershell
+# ---- Parametri (personalizza questi) ----
+$Kubectl     = "C:\kubectl\kubectl.exe"
+$Kubeconfig  = "C:\kubeconfig\config-test.yaml"
+$KubeContext = "kubernetes-admin@K8DOSSIERTEST"
+
+$Namespace = "ellipse-index"
+
+# Opzione A (consigliata): seleziona il pod automaticamente tramite label
+# Imposta la label corretta del tuo deployment (esempio: app=ubuntu-mongosync)
+$PodSelector = "app=ubuntu-mongosync"
+
+# Opzione B: specifica direttamente il nome del pod (se preferisci)
+# $PodName = "ubuntu-mongosync-6845564564-zvnn9"
+
+$RemoteBaseDir = "/data/Mongo_Sh_Script"
+
+# Directory locale dove hai clonato/coppiato Mongo_Sh_Script
+$LocalProjectDir = "C:\Appo10\EXP_POD\Mongo_Sh_Script"
+$LocalLibDir     = Join-Path $LocalProjectDir "lib"
+
+# ---- Seleziona il contesto ----
+& $Kubectl --kubeconfig $Kubeconfig config use-context $KubeContext
+
+# ---- Risolvi il pod (scegli A o B) ----
+if ($PodSelector -and $PodSelector.Trim().Length -gt 0) {
+  $PodName = (& $Kubectl --kubeconfig $Kubeconfig -n $Namespace get pod -l $PodSelector -o jsonpath="{.items[0].metadata.name}")
+}
+
+if (-not $PodName) {
+  throw "Pod non risolto. Imposta `$PodSelector (label) oppure `$PodName (nome pod)."
+}
+
+# ---- Copia `lib` nel pod ----
+Set-Location $LocalProjectDir
+& $Kubectl --kubeconfig $Kubeconfig cp $LocalLibDir "${Namespace}/${PodName}:${RemoteBaseDir}"
+```
+
+Note:
+- `kubectl cp` copierà la cartella `lib` in: `${RemoteBaseDir}/lib`
+- Se hai più pod che matchano la label, viene scelto il primo (`.items[0]`).
