@@ -155,6 +155,36 @@ cat ./state/pipeline_all_script/k8s-bonifica/latest_run.json
 ```bash
 # sostituisci <runId>
 grep -n "STEP_FAILED\|STEP_ERROR\|STOP_ON_ERROR" ./logs/pipeline_all_script/k8s-bonifica/<runId>/master.log
+
+# path completo del master log
+cat "./logs/pipeline_all_script/k8s-bonifica/${runId}/master.log"
+```
+
+### Vedere lo stato della pipeline (run_state.json) per un runId
+
+Mostra lo **stato generale** e lo **stato di tutti gli step** di una specifica esecuzione.
+
+```bash
+# sostituisci <runId> con il runId della run che ti interessa
+jq '.status, (.steps[] | {id, name, status})' ./state/pipeline_all_script/k8s-bonifica/<runId>/run_state.json
+```
+### Forzare uno step da `SKIPPED` a `PENDING` nel `run_state.json` (per rieseguirlo)
+
+`PENDING` è uno status valido: in modalità `--resume` il runner salta **solo** gli step con `status="SUCCESS"`.  
+Quindi portare uno step da `SKIPPED` a `PENDING` permette di rieseguirlo (a patto che lo step risulti `enabled=true`).
+
+> Nota: se lo step è `enabled=false`, il runner lo rimetterà `SKIPPED` automaticamente. In quel caso devi prima impostare `enabled=true`
+> (meglio nel file `pipeline/*.json`, oppure direttamente in `run_state.json`).
+
+#### Script (consigliato, usa `jq`) — nella cartella dove c’è `run_state.json`
+
+```bash
+# Backup (consigliato)
+cp -a run_state.json "run_state.json.bak.$(date -u +%Y%m%dT%H%M%SZ)"
+
+# Trasforma tutti gli step con status SKIPPED in PENDING
+jq '(.steps[] | select(.status=="SKIPPED") | .status) = "PENDING"' run_state.json > run_state.json.tmp \
+  && mv run_state.json.tmp run_state.json
 ```
 ### Copiare la cartella `Mongo_Sh_Script\lib` da Windows al pod Ubuntu su Kubernetes (`kubectl cp`)
 
