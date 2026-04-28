@@ -187,7 +187,7 @@ jq '(.steps[] | select(.status=="SKIPPED") | .status) = "PENDING"' run_state.jso
   && mv run_state.json.tmp run_state.json
 
 # Trasforma tutti gli step con  "enabled": false in true
-jq '(.steps[] | select(.enabled=="false") | .status) = "true"' run_state.json > run_state.json.tmp \
+jq '(.steps[] | select(.enabled == false) | .enabled) = true' run_state.json > run_state.json.tmp \
   && mv run_state.json.tmp run_state.json
 ```
 ### Copiare la cartella `Mongo_Sh_Script\lib` da Windows al pod Ubuntu su Kubernetes (`kubectl cp`)
