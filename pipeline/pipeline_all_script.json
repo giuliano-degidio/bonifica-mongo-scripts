@@ -722,6 +722,197 @@
         "targetColl": "bonifica_bundle_inserted_bck",
         "dropTargetIfExists": true
       }
+    },
+    {
+      "id": 58,
+      "name": "099_00_backup_sio_impacted",
+      "enabled": true,
+      "file": "099_00_backup_sio_impacted.js",
+      "timeoutSec": 0,
+      "params": {
+        "idsFileName": "sio_modified_id.js",
+        "idsFileNameHc40Adt": "sio_modified_id_hc40_adt.js",
+        "sourceCollection": "encounter",
+        "backupCollection": "bonifica_encounter_deleted_bck",
+        "dropBefore": true,
+        "batchIds": 1000,
+        "bulkWrite": 1000,
+        "logEvery": 1000
+      }
+    },
+    {
+      "id": 59,
+      "name": "099_00B_insert_encounter_history",
+      "enabled": true,
+      "file": "099_00B_insert_encounter_history.js",
+      "timeoutSec": 0,
+      "params": {
+        "idsFileName": "sio_modified_id.js",
+        "idsFileNameHc40Adt": "sio_modified_id_hc40_adt.js",
+        "sourceCollection": "encounter",
+        "historyCollection": "encounter_history",
+        "historySuffix": null,
+        "exportKeys": true,
+        "exportConstName": "ENCOUNTER_HISTORY_INSERTED_ID",
+        "exportFilePrefix": "encounter_history_inserted_id_",
+        "batchIds": 1000,
+        "bulkWrite": 1000,
+        "logEvery": 1000
+      }
+    },
+    {
+      "id": 60,
+      "name": "099_01_03_export_encounter_without_status_add",
+      "enabled": true,
+      "file": "099_01_03_esportazione_su_file_encounter_ihub_hc40_adt_without_status_add.js",
+      "timeoutSec": 0,
+      "params": {
+        "mapFileName": "sio_ihub_hc40_adt_keys_map.js",
+        "mapConstName": "SIO_IHUB_HC40_ADT_KEYS",
+        "outBase": "encounter_without_status_add",
+        "outExt": ".jsonl",
+        "mapChunkSize": 1000,
+        "batchSize": 2000,
+        "logEvery": 1000,
+        "logToFile": true,
+        "logToConsole": true,
+        "logFileName": "encounter_without_status_add.log"
+      }
+    },
+    {
+      "id": 61,
+      "name": "099_01_03B_export_encounter_without_status_original",
+      "enabled": true,
+      "file": "099_01_03B_esportazione_su_file_encounter_ihub_hc40_adt_without_status_original.js",
+      "timeoutSec": 0,
+      "params": {
+        "mapFileName": "sio_ihub_hc40_adt_keys_map.js",
+        "mapConstName": "SIO_IHUB_HC40_ADT_KEYS",
+        "outBase": "encounter_without_status_original",
+        "outExt": ".jsonl",
+        "mapChunkSize": 1000,
+        "batchSize": 2000,
+        "logEvery": 1000,
+        "logToFile": true,
+        "logToConsole": true,
+        "logFileName": "encounter_without_status_original.log"
+      }
+    },
+    {
+      "id": 62,
+      "name": "099_01_04_import_encounter_without_status_modified",
+      "enabled": true,
+      "file": "099_01_04_importazione_encounter_ihub_hc40_adt_without_status_modified.js",
+      "timeoutSec": 0,
+      "params": {
+        "filePrefix": "encounter_without_status_add_chunk",
+        "fileSuffix": ".jsonl",
+        "maxFiles": 0,
+        "collection": "encounter_without_status_modified",
+        "mode": "insert",
+        "batch": 1000,
+        "dropBefore": true
+      }
+    },
+    {
+      "id": 63,
+      "name": "099_01_04B_import_encounter_without_status_original",
+      "enabled": true,
+      "file": "099_01_04B_importazione_encounter_ihub_hc40_adt_without_status_original.js",
+      "timeoutSec": 0,
+      "params": {
+        "filePrefix": "encounter_without_status_original_chunk",
+        "fileSuffix": ".jsonl",
+        "maxFiles": 0,
+        "collection": "encounter_without_status_original",
+        "mode": "insert",
+        "batch": 1000,
+        "dropBefore": true
+      }
+    },
+    {
+      "id": 64,
+      "name": "099_01_delete_sio_impacted",
+      "enabled": true,
+      "file": "099_01_delete_sio_impacted.js",
+      "timeoutSec": 0,
+      "params": {
+        "idsFileName": "sio_modified_id.js",
+        "idsFileNameHc40Adt": "sio_modified_id_hc40_adt.js",
+        "targetCollection": "encounter",
+        "requireConfirmation": false,
+        "batchIds": 1000,
+        "logEveryDeletes": 1000
+      }
+    },
+    {
+      "id": 65,
+      "name": "099_02_01_delete_encounter_from_without_status_original",
+      "enabled": true,
+      "file": "099_02_01_delete_encounter_from_without_status_original.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceCollection": "encounter_without_status_original",
+        "targetCollection": "encounter",
+        "dryRun": false,
+        "bulkDelete": 1000,
+        "logEveryDeletes": 1000
+      }
+    },
+    {
+      "id": 66,
+      "name": "099_02_01B_insert_encounter_history_from_without_status_original",
+      "enabled": true,
+      "file": "099_02_01B_insert_encounter_history_from_without_status_original.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceCollection": "encounter_without_status_original",
+        "historyCollection": "encounter_history",
+        "historySuffix": null,
+        "exportKeys": true,
+        "exportConstName": "ENCOUNTER_HISTORY_WITHOUT_STATUS_INSERTED_ID",
+        "exportFileName": "encounter_history_without_status_inserted_id.js",
+        "bulkWrite": 1000,
+        "logEvery": 1000
+      }
+    },
+    {
+      "id": 67,
+      "name": "099_02_02_insert_encounter_without_status_modified",
+      "enabled": true,
+      "file": "099_02_02_insert_encounter_without_status_modified.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceCollection": "encounter_without_status_modified",
+        "targetCollection": "encounter",
+        "mode": "upsert",
+        "batch": 1000,
+        "logEvery": 1000
+      }
+    },
+    {
+      "id": 68,
+      "name": "099_02_03_rename_collection_encounter_without_status_original_to_backup",
+      "enabled": true,
+      "file": "099_02_03_rename_collection_encounter_without_status_original_to_backup.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceCollection": "encounter_without_status_original",
+        "targetCollection": "bonifica_encounter_without_status_original_deleted_bck",
+        "dropTargetIfExists": true
+      }
+    },
+    {
+      "id": 69,
+      "name": "099_02_04_rename_collection_encounter_without_status_modified_to_backup",
+      "enabled": true,
+      "file": "099_02_04_rename_collection_encounter_without_status_modified_to_backup.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceCollection": "encounter_without_status_modified",
+        "targetCollection": "bonifica_encounter_without_status_modified_inserted_bck",
+        "dropTargetIfExists": true
+      }
     }
   ]
 }
