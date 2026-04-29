@@ -44,12 +44,9 @@ require_cmd mkdir
 require_cmd printf
 require_cmd tee
 
-# timeout and zip are optional (we will detect them)
+# timeout is optional (we will detect it)
 has_timeout="false"
 if command -v timeout >/dev/null 2>&1; then has_timeout="true"; fi
-
-has_zip="false"
-if command -v zip >/dev/null 2>&1; then has_zip="true"; fi
 
 # ---------- Read config ----------
 pipelineName="$(jq -r '.pipelineName' "${CONFIG}")"
@@ -170,8 +167,7 @@ cat > "${runtimePath}" <<EOF
     "teeToConsole": ${teeToConsole},
     "locking": ${locking},
     "defaultTimeoutSec": ${defaultTimeoutSec},
-    "hasTimeoutCmd": ${has_timeout},
-    "hasZipCmd": ${has_zip}
+    "hasTimeoutCmd": ${has_timeout}
   },
   "generatedAt": $(jq -Rn --arg v "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" '$v')
 }
@@ -439,42 +435,6 @@ if [[ "${resultsCount}" -gt 0 ]]; then
   log "RESULT_SUMMARY_JSONL_BEGIN"
   cat "${resultsSummaryPath}" | tee -a "${masterLog}" >/dev/null
   log "RESULT_SUMMARY_JSONL_END"
-fi
-
-# ---------- ZIP bundle ----------
-zipOut="${expDir}/${pipelineName}_${ENV_NAME}_${runId}.zip"
-if [[ "${has_zip}" == "true" ]]; then
-  log "ZIP_START: ${zipOut}"
-
-  mapfile -t stepFiles < <(jq -r '.steps[] | select(.enabled==true) | .file' "${runStatePath}" | sort -u)
-
-  tmpListFile="${runDir}/zip_file_list.txt"
-  : > "${tmpListFile}"
-
-  echo "${CONFIG}" >> "${tmpListFile}"
-
-  if [[ -n "${BASH_SOURCE[0]:-}" && -f "${BASH_SOURCE[0]}" ]]; then
-    echo "${BASH_SOURCE[0]}" >> "${tmpListFile}"
-  fi
-
-  if [[ -f "${baseDir}/lib/read_context.js" ]]; then
-    echo "${baseDir}/lib/read_context.js" >> "${tmpListFile}"
-  fi
-
-  for f in "${stepFiles[@]}"; do
-    if [[ -f "${scriptsDir}/${f}" ]]; then
-      echo "${scriptsDir}/${f}" >> "${tmpListFile}"
-    else
-      log "ZIP_NOTE: step file not found for zip: ${scriptsDir}/${f}"
-    fi
-  done
-
-  zip -q -r "${zipOut}" -@ < "${tmpListFile}" || log "ZIP_WARN: zip creation failed (continuing)."
-  zip -q -r "${zipOut}" "${runDir}" "${runLogsDir}" >/dev/null 2>&1 || true
-
-  log "ZIP_END: ${zipOut}"
-else
-  log "ZIP_SKIP: 'zip' command not found; skipping zip creation."
 fi
 
 exit "${finalExit}"
