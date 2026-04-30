@@ -1,0 +1,83 @@
+{
+  "pipelineName": "pipeline_rollback_script",
+  "version": "1.0.0",
+  "tools": {
+    "mongoshPath": "/data/mongosh/bin/mongosh"
+  },
+  "paths": {
+    "baseDir": ".",
+    "scriptsDir": "./scripts",
+    "expDir": "./EXP",
+    "logsDir": "./logs",
+    "stateDir": "./state"
+  },
+  "settings": {
+    "locking": true,
+    "teeToConsole": false,
+    "defaultTimeoutSec": 0,
+    "continueOnError": true,
+    "dryRunDefault": false
+  },
+  "envs": {
+    "k8s-bonifica": {
+      "mongo": {
+        "uriBase": "mongodb://root:password@mongo-rs-1.mongo-rs-svc.mongodb.svc.cluster.local:27017",
+        "dbName": "hc40-index-bonifica",
+        "uriParams": "authSource=admin&directConnection=true&readPreference=primary"
+      }
+    }
+  },
+  "steps": [
+    {
+      "id": 7,
+      "name": "007_17_rollback_collection_documentreference_from_backup",
+      "file": "007_17_rollback_collection_documentreference_from_backup.js",
+      "enabled": true,
+      "timeoutSec": 0,
+      "params": {
+        "historyExportFile": "documentreference_history_inserted_id.js"
+      }
+    },
+    {
+      "id": 17,
+      "name": "017_17_rollback_collection_servicerequest_from_backup",
+      "file": "017_17_rollback_collection_servicerequest_from_backup.js",
+      "enabled": true,
+      "timeoutSec": 0,
+      "params": {
+        "historyExportFile": "servicerequest_history_inserted_id.js"
+      }
+    },
+    {
+      "id": 27,
+      "name": "027_17_rollback_collection_observation_from_backup",
+      "file": "027_17_rollback_collection_observation_from_backup.js",
+      "enabled": true,
+      "timeoutSec": 0,
+      "params": {
+        "historyExportFile": "observation_history_inserted_id.js"
+      }
+    },
+    {
+      "id": 67,
+      "name": "067_17_rollback_collection_bundle_from_backup",
+      "file": "067_17_rollback_collection_bundle_from_backup.js",
+      "enabled": true,
+      "timeoutSec": 0,
+      "params": {
+        "historyExportFile": "bundle_history_inserted_id.js"
+      }
+    },
+    {
+      "id": 99,
+      "name": "099_17_rollback_collection_encounter_from_backup",
+      "file": "099_17_rollback_collection_encounter_from_backup.js",
+      "enabled": true,
+      "timeoutSec": 0,
+      "params": {
+        "historyExportFile": "encounter_history_inserted_id.js",
+        "wsHistoryExportFile": "encounter_history_without_status_inserted_id.js"
+      }
+    }
+  ]
+}
