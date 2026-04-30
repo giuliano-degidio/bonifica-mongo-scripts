@@ -123,6 +123,9 @@ Per forzare l’esecuzione reale:
 
 ```bash
 ./run_pipeline_rollback.sh --config pipeline/pipeline_rollback_script.json --env k8s-bonifica --resume --no-dry-run
+
+per forzare l'esecuzione reale NON IN RESUME e visualizzare l'output su terminale (se il default su file config (pipeline_rollback_script.json)  è false ("teeToConsole": false) :
+./run_pipeline_rollback.sh --config pipeline/pipeline_rollback_script.json --env k8s-bonifica --rerun-all --no-dry-run --tee-to-console
 ```
 
 ### Continue on error
