@@ -103,13 +103,13 @@ Dalla root del repo:
 
 ```bash
 chmod +x ./run_pipeline_rollback.sh
-./run_pipeline_rollback.sh --config pipeline/pipeline_rollback_script.json --env k8s-bonifica --resume
+./run_pipeline_rollback.sh --config pipeline/pipeline_rollback_script.json --env k8s-bonifica --resume --no-dry-run
 ```
 
 Per rilanciare tutto da zero (nuovo `runId` rollback):
 
 ```bash
-./run_pipeline_rollback.sh --config pipeline/pipeline_rollback_script.json --env k8s-bonifica --rerun-all
+./run_pipeline_rollback.sh --config pipeline/pipeline_rollback_script.json --env k8s-bonifica --rerun-all --no-dry-run
 ```
 
 ### Dry-run (simulazione)
