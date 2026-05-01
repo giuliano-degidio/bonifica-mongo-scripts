@@ -75,7 +75,23 @@ Esempio esecuzione con env:
 ```bash
 ./run_pipeline.sh --config pipeline/pipeline_all_script.json --env k8s-bonifica --resume
 ```
+## Resume e gestione degli step `enabled`
 
+Quando la pipeline viene eseguita in modalità `--resume`:
+
+- Gli **step già completati con successo (`SUCCESS`) non vengono rieseguiti**, a meno che il loro stato venga forzato manualmente a `PENDING`.
+- Se un **step è `enabled: false`**, viene automaticamente skippato e contrassegnato come `SKIPPED`.
+    - Modificando `enabled: true` nella configurazione della pipeline (`pipeline_all_script.json`), lo step sarà rivalutato e rieseguito.
+
+### Esecuzione runtime personalizzata
+
+Se vuoi rieseguire uno step specifico in modalità `--resume`:
+
+1. Cambia il valore `enabled` in `true` nel file `pipeline_all_script.json`.
+2. Esegui la pipeline in modalità `resume`:
+   ```bash
+   ./run_pipeline.sh --config pipeline/pipeline_all_script.json --env <NOME_ENV> --resume
+   
 ## Pipeline Rollback
 
 Questa repo include anche una pipeline dedicata al **rollback** della bonifica, con gli stessi concetti di runner/state/log della pipeline principale.
