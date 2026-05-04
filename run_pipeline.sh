@@ -241,6 +241,17 @@ if [[ "${MODE}" == "rerun-all" || ! -f "${runStatePath}" ]]; then
   done
 fi
 
+# ---------- Convert SKIPPED→PENDING for re-enabled steps (resume mode) ----------
+update_skipped_to_pending() {
+  local stateFile="$1"
+  jq '.steps |= map(if .status == "SKIPPED" and .enabled == true then .status = "PENDING" else . end)' \
+    "${stateFile}" > "${stateFile}.tmp" && mv "${stateFile}.tmp" "${stateFile}"
+}
+
+if [[ "${MODE}" == "resume" && -f "${runStatePath}" ]]; then
+  update_skipped_to_pending "${runStatePath}"
+fi
+
 log "START: pipelineName=${pipelineName} env=${ENV_NAME} runId=${runId} mode=${MODE} stopOnError=${stopOnError} teeToConsole=${teeToConsole} mongo.dbName=${dbName}"
 log "CONFIG: ${CONFIG}"
 log "MONGO_URI: ${mongoUri}"
