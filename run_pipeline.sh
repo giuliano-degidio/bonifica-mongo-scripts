@@ -241,6 +241,27 @@ if [[ "${MODE}" == "rerun-all" || ! -f "${runStatePath}" ]]; then
   done
 fi
 
+# Fase di aggiornamento: sincronizza `run_state.json` con `pipeline_all_script.json`
+if [[ "${MODE}" == "resume" ]]; then
+  stepsLen="$(jq '.steps | length' "${CONFIG}")"
+  for ((i = 0; i < stepsLen; i++)); do
+    stepId="$(jq -r ".steps[$i].id" "${CONFIG}")"
+    stepEnabled="$(jq -r ".steps[$i].enabled" "${CONFIG}")"
+    stateEnabled="$(jq -r ".steps[] | select(.id == $stepId).enabled" "${runStatePath}")"
+    stateStatus="$(jq -r ".steps[] | select(.id == $stepId).status" "${runStatePath}")"
+
+    # Aggiorna `enabled` e `status` automaticamente
+    if [[ "${stepEnabled}" == "true" && "${stateEnabled}" == "false" ]]; then
+      jq --argjson i "${i}" --arg stepStatus "${stateStatus}" \
+        '(.steps[] | select(.id == $i).enabled) = true |
+         if .steps[] | select(.id == $i).status == "SKIPPED" then
+           (.steps[] | select(.id == $i).status) = "PENDING"
+         else .
+         end' "${runStatePath}" > "${runStatePath}.tmp" && mv "${runStatePath}.tmp" "${runStatePath}"
+    fi
+  done
+fi
+
 # ---------- Convert SKIPPED→PENDING for re-enabled steps (resume mode) ----------
 update_skipped_to_pending() {
   local stateFile="$1"
@@ -283,6 +304,8 @@ for idx in ${orderedIdxs}; do
   stepFile="$(jq -r ".steps[${idx}].file" "${runStatePath}")"
   stepTimeout="$(jq -r ".steps[${idx}].timeoutSec // 0" "${runStatePath}")"
   stepStopOverride="$(jq -r ".steps[${idx}].stopOnErrorOverride" "${runStatePath}")"
+
+
 
   effStopOnError="${stopOnError}"
   if [[ "${stepStopOverride}" != "null" ]]; then
