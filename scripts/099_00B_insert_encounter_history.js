@@ -50,7 +50,8 @@ function makeHistoryId(oldId, msSuffix) {
 
   const exportKeys = params.exportKeys ?? true;
   const exportConstName = params.exportConstName || "ENCOUNTER_HISTORY_INSERTED_ID";
-  const exportFilePrefix = params.exportFilePrefix || "encounter_history_inserted_id_";
+  //const exportFilePrefix = params.exportFilePrefix || "encounter_history_inserted_id";
+  const exportFilePrefix = (params.exportFilePrefix || "encounter_history_inserted_id").replace(/_+$/, "");
 
   const outDir = path.join(expDir, String(runId || "no-runid"));
   fs.mkdirSync(outDir, { recursive: true });
@@ -58,7 +59,8 @@ function makeHistoryId(oldId, msSuffix) {
   const idsPath = path.join(outDir, idsFileName);
   const idsPathHc40 = path.join(outDir, idsFileNameHc40Adt);
 
-  const exportFile = path.join(outDir, `${exportFilePrefix}${new Date().toISOString().replace(/[:.]/g, "-")}.js`);
+ // const exportFile = path.join(outDir, `${exportFilePrefix}${new Date().toISOString().replace(/[:.]/g, "-")}.js`);
+  const exportFile = path.join(outDir, `${exportFilePrefix}.js`);
 
   const startMs = Date.now();
   log(`START: idsPath=${idsPath} idsPathHc40=${idsPathHc40} sourceCollection=${sourceCollection} historyCollection=${historyCollection} batchIds=${batchIds} bulkWrite=${bulkWrite} logEvery=${logEvery} runSuffix=${runSuffix} exportKeys=${exportKeys}`);
