@@ -13,15 +13,15 @@
   },
   "settings": {
     "locking": true,
-    "teeToConsole": false,
+    "teeToConsole": true,
     "defaultTimeoutSec": 0,
     "continueOnError": true,
-    "dryRunDefault": false
+    "dryRunDefault": true
   },
   "envs": {
     "k8s-bonifica": {
       "mongo": {
-        "uriBase": "mongodb://root:password@mongo-rs-1.mongo-rs-svc.mongodb.svc.cluster.local:27017",
+        "uriBase": "mongodb://root:password@mongo-rs-2.mongo-rs-svc.mongodb.svc.cluster.local:27017",
         "dbName": "hc40-index-bonifica",
         "uriParams": "authSource=admin&directConnection=true&readPreference=primary"
       }
@@ -56,6 +56,16 @@
       "timeoutSec": 0,
       "params": {
         "historyExportFile": "observation_history_inserted_id.js"
+      }
+    },
+    {
+      "id": 47,
+      "name": "047_17_rollback_collection_diagnosticreport_from_backup",
+      "file": "047_17_rollback_collection_diagnosticreport_from_backup.js",
+      "enabled": true,
+      "timeoutSec": 0,
+      "params": {
+        "historyExportFile": "diagnosticreport_history_inserted_id.js"
       }
     },
     {
