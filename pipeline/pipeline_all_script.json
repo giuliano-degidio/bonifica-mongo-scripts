@@ -20,7 +20,7 @@
   "envs": {
     "k8s-bonifica": {
       "mongo": {
-        "uriBase": "mongodb://root:password@mongo-rs-1.mongo-rs-svc.mongodb.svc.cluster.local:27017",
+        "uriBase": "mongodb://root:password@mongo-rs-2.mongo-rs-svc.mongodb.svc.cluster.local:27017",
         "dbName": "hc40-index-bonifica",
         "uriParams": "authSource=admin&directConnection=true&readPreference=primary"
       }
@@ -333,9 +333,16 @@
         "dropTargetIfExists": true
       }
     },
-
     {
       "id": 31,
+      "name": "void", 
+      "enabled": true,
+      "file": "199_99_void.js",
+      "timeoutSec": 0,
+      "params": {}
+    },
+    {
+      "id": 32,
       "name": "servicerequest_export_replace_chunks",
       "enabled": true,
       "file": "016_03_esportazione_su_file_prod_match_servicerequest_by_keys_replace.js",
@@ -352,7 +359,7 @@
       }
     },
     {
-      "id": 32,
+      "id": 33,
       "name": "servicerequest_export_original_chunks",
       "enabled": true,
       "file": "016_03B_esportazione_su_file_prod_match_servicerequest_by_keys_original.js",
@@ -369,7 +376,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 34,
       "name": "servicerequest_import_modified",
       "enabled": true,
       "file": "016_04_importazione_prod_match_servicerequest_by_keys_replace_client_side.js",
@@ -383,7 +390,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 35,
       "name": "servicerequest_import_original",
       "enabled": true,
       "file": "016_04B_importazione_prod_match_servicerequest_by_keys_original.js",
@@ -397,7 +404,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 36,
       "name": "servicerequest_history_insert",
       "enabled": true,
       "file": "017_01B_insert_servicerequest_history_from_impacted_original.js",
@@ -413,7 +420,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 37,
       "name": "servicerequest_delete_original_from_target",
       "enabled": true,
       "file": "017_01_delete_servicerequest_from_impacted_original.js",
@@ -426,7 +433,7 @@
       }
     },
     {
-      "id": 37,
+      "id": 38,
       "name": "servicerequest_upsert_modified_to_target",
       "enabled": true,
       "file": "017_02_insert_servicerequest_from_impacted_modified.js",
@@ -440,7 +447,7 @@
       }
     },
     {
-      "id": 38,
+      "id": 39,
       "name": "servicerequest_rename_original_to_backup",
       "enabled": true,
       "file": "017_03_rename_collection_servicerequest_impacted_original_to_backup.js",
@@ -452,7 +459,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 40,
       "name": "servicerequest_rename_modified_to_backup",
       "enabled": true,
       "file": "017_04_rename_collection_servicerequest_impacted_modified_to_backup.js",
@@ -463,9 +470,16 @@
         "dropTargetIfExists": true
       }
     },
-
     {
-      "id": 40,
+      "id": 41,
+      "name": "void", 
+      "enabled": true,
+      "file": "199_99_void.js",
+      "timeoutSec": 0,
+      "params": {}
+    },
+    {
+      "id": 42,
       "name": "observation_export_replace_chunks",
       "enabled": true,
       "file": "026_03_esportazione_su_file_prod_match_observation_by_keys_replace.js",
@@ -482,7 +496,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 43,
       "name": "observation_export_original_chunks",
       "enabled": true,
       "file": "026_03B_esportazione_su_file_prod_match_observation_by_keys_original.js",
@@ -499,7 +513,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 44,
       "name": "observation_import_modified",
       "enabled": true,
       "file": "026_04_importazione_prod_match_observation_by_keys_replace_client_side.js",
@@ -513,7 +527,7 @@
       }
     },
     {
-      "id": 43,
+      "id": 45,
       "name": "observation_import_original",
       "enabled": true,
       "file": "026_04B_importazione_prod_match_observation_by_keys_original.js",
@@ -527,7 +541,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 46,
       "name": "observation_history_insert",
       "enabled": true,
       "file": "027_01B_insert_observation_history_from_impacted_original.js",
@@ -543,7 +557,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 47,
       "name": "observation_delete_original_from_target",
       "enabled": true,
       "file": "027_01_delete_observation_from_impacted_original.js",
@@ -556,7 +570,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 48,
       "name": "observation_upsert_modified_to_target",
       "enabled": true,
       "file": "027_02_insert_observation_from_impacted_modified.js",
@@ -570,7 +584,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 49,
       "name": "observation_rename_original_to_backup",
       "enabled": true,
       "file": "027_03_rename_collection_observation_impacted_original_to_backup.js",
@@ -582,7 +596,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 50,
       "name": "observation_rename_modified_to_backup",
       "enabled": true,
       "file": "027_04_rename_collection_observation_impacted_modified_to_backup.js",
@@ -592,10 +606,154 @@
         "targetColl": "bonifica_observation_inserted_bck",
         "dropTargetIfExists": true
       }
-    },
-
+    },	
     {
-      "id": 49,
+      "id": 51,
+      "name": "void", 
+      "enabled": true,
+      "file": "199_99_void.js",
+      "timeoutSec": 0,
+      "params": {}
+    },
+   {
+      "id": 52,
+      "name": "diagnosticreport_export_replace_chunks",
+      "enabled": true,
+      "file": "046_03_esportazione_su_file_prod_match_diagnosticreport_by_keys_replace.js",
+      "timeoutSec": 0,
+      "params": {
+        "outBase": "diagnosticreport_impacted",
+        "mapFileName": "sio_ihub_hc40_adt_keys_map.js",
+        "mapConstName": "SIO_IHUB_HC40_ADT_KEYS",
+        "mapChunkSize": 1000,
+        "batchSize": 2000,
+        "logEvery": 1000,
+        "matchName": "encounter:encounter.reference",
+        "hintName": "attribute_search.name_1_attribute_search.value_1__id_1"
+      }
+    },
+    {
+      "id": 53,
+      "name": "diagnosticreport_export_original_chunks",
+      "enabled": true,
+      "file": "046_03B_esportazione_su_file_prod_match_diagnosticreport_by_keys_original.js",
+      "timeoutSec": 0,
+      "params": {
+        "outBase": "diagnosticreport_impacted_original",
+        "mapFileName": "sio_ihub_hc40_adt_keys_map.js",
+        "mapConstName": "SIO_IHUB_HC40_ADT_KEYS",
+        "mapChunkSize": 1000,
+        "batchSize": 2000,
+        "logEvery": 1000,
+        "matchName": "encounter:encounter.reference",
+        "hintName": "attribute_search.name_1_attribute_search.value_1__id_1"
+      }
+    },
+    {
+      "id": 54,
+      "name": "diagnosticreport_import_modified",
+      "enabled": true,
+      "file": "046_04_importazione_prod_match_diagnosticreport_by_keys_replace_client_side.js",
+      "timeoutSec": 0,
+      "params": {
+        "filePrefix": "diagnosticreport_impacted_chunk",
+        "collection": "diagnosticreport_impacted_modified",
+        "mode": "insert",
+        "batch": 1000,
+        "dropBefore": true
+      }
+    },
+    {
+      "id": 55,
+      "name": "diagnosticreport_import_original",
+      "enabled": true,
+      "file": "046_04B_importazione_prod_match_diagnosticreport_by_keys_original.js",
+      "timeoutSec": 0,
+      "params": {
+        "filePrefix": "diagnosticreport_impacted_original_chunk",
+        "collection": "diagnosticreport_impacted_original",
+        "mode": "insert",
+        "batch": 1000,
+        "dropBefore": true
+      }
+    },
+    {
+      "id": 56,
+      "name": "diagnosticreport_history_insert",
+      "enabled": true,
+      "file": "047_01B_insert_diagnosticreport_history_from_impacted_original.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceColl": "diagnosticreport_impacted_original",
+        "historyColl": "diagnosticreport_history",
+        "bulkWrite": 1000,
+        "logEvery": 1000,
+        "exportKeys": true,
+        "exportFileName": "diagnosticreport_history_inserted_id.js",
+        "exportConstName": "DIAGNOSTICREPORT_HISTORY_INSERTED_ID"
+      }
+    },
+    {
+      "id": 57,
+      "name": "diagnosticreport_delete_original_from_target",
+      "enabled": true,
+      "file": "047_01_delete_diagnosticreport_from_impacted_original.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceColl": "diagnosticreport_impacted_original",
+        "targetColl": "diagnosticreport",
+        "dryRun": false,
+        "bulkDelete": 1000
+      }
+    },
+    {
+      "id": 58,
+      "name": "diagnosticreport_upsert_modified_to_target",
+      "enabled": true,
+      "file": "047_02_insert_diagnosticreport_from_impacted_modified.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceColl": "diagnosticreport_impacted_modified",
+        "targetColl": "diagnosticreport",
+        "mode": "upsert",
+        "batch": 1000,
+        "logEvery": 1000
+      }
+    },
+    {
+      "id": 59,
+      "name": "diagnosticreport_rename_original_to_backup",
+      "enabled": true,
+      "file": "047_03_rename_collection_diagnosticreport_impacted_original_to_backup.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceColl": "diagnosticreport_impacted_original",
+        "targetColl": "bonifica_diagnosticreport_deleted_bck",
+        "dropTargetIfExists": true
+      }
+    },
+    {
+      "id": 60,
+      "name": "diagnosticreport_rename_modified_to_backup",
+      "enabled": true,
+      "file": "047_04_rename_collection_diagnosticreport_impacted_modified_to_backup.js",
+      "timeoutSec": 0,
+      "params": {
+        "sourceColl": "diagnosticreport_impacted_modified",
+        "targetColl": "bonifica_diagnosticreport_inserted_bck",
+        "dropTargetIfExists": true
+      }
+    },
+    {
+      "id": 61,
+      "name": "void", 
+      "enabled": true,
+      "file": "199_99_void.js",
+      "timeoutSec": 0,
+      "params": {}
+    },
+    {
+      "id": 62,
       "name": "bundle_export_replace_chunks",
       "enabled": true,
       "file": "066_03_esportazione_su_file_prod_match_bundle_by_keys_replace.js",
@@ -612,7 +770,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 63,
       "name": "bundle_export_original_chunks",
       "enabled": true,
       "file": "066_03B_esportazione_su_file_prod_match_bundle_by_keys_original.js",
@@ -629,7 +787,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 64,
       "name": "bundle_import_modified",
       "enabled": true,
       "file": "066_04_importazione_prod_match_bundle_by_keys_replace_client_side.js",
@@ -643,7 +801,7 @@
       }
     },
     {
-      "id": 52,
+      "id": 65,
       "name": "bundle_import_original",
       "enabled": true,
       "file": "066_04B_importazione_prod_match_bundle_by_keys_original.js",
@@ -657,7 +815,7 @@
       }
     },
     {
-      "id": 53,
+      "id": 66,
       "name": "bundle_history_insert",
       "enabled": true,
       "file": "067_01B_insert_bundle_history_from_impacted_original.js",
@@ -673,7 +831,7 @@
       }
     },
     {
-      "id": 54,
+      "id": 67,
       "name": "bundle_delete_original_from_target",
       "enabled": true,
       "file": "067_01_delete_bundle_from_impacted_original.js",
@@ -686,7 +844,7 @@
       }
     },
     {
-      "id": 55,
+      "id": 68,
       "name": "bundle_upsert_modified_to_target",
       "enabled": true,
       "file": "067_02_insert_bundle_from_impacted_modified.js",
@@ -700,7 +858,7 @@
       }
     },
     {
-      "id": 56,
+      "id": 69,
       "name": "bundle_rename_original_to_backup",
       "enabled": true,
       "file": "067_03_rename_collection_bundle_impacted_original_to_backup.js",
@@ -712,7 +870,7 @@
       }
     },
     {
-      "id": 57,
+      "id": 70,
       "name": "bundle_rename_modified_to_backup",
       "enabled": true,
       "file": "067_04_rename_collection_bundle_impacted_modified_to_backup.js",
@@ -724,7 +882,15 @@
       }
     },
     {
-      "id": 58,
+      "id": 71,
+      "name": "void", 
+      "enabled": true,
+      "file": "199_99_void.js",
+      "timeoutSec": 0,
+      "params": {}
+    },
+    {
+      "id": 72,
       "name": "099_00_backup_sio_impacted",
       "enabled": true,
       "file": "099_00_backup_sio_impacted.js",
@@ -741,7 +907,7 @@
       }
     },
     {
-      "id": 59,
+      "id": 73,
       "name": "099_00B_insert_encounter_history",
       "enabled": true,
       "file": "099_00B_insert_encounter_history.js",
@@ -761,7 +927,7 @@
       }
     },
     {
-      "id": 60,
+      "id": 74,
       "name": "099_01_03_export_encounter_without_status_add",
       "enabled": true,
       "file": "099_01_03_esportazione_su_file_encounter_ihub_hc40_adt_without_status_add.js",
@@ -780,7 +946,7 @@
       }
     },
     {
-      "id": 61,
+      "id": 75,
       "name": "099_01_03B_export_encounter_without_status_original",
       "enabled": true,
       "file": "099_01_03B_esportazione_su_file_encounter_ihub_hc40_adt_without_status_original.js",
@@ -799,7 +965,7 @@
       }
     },
     {
-      "id": 62,
+      "id": 76,
       "name": "099_01_04_import_encounter_without_status_modified",
       "enabled": true,
       "file": "099_01_04_importazione_encounter_ihub_hc40_adt_without_status_modified.js",
@@ -815,7 +981,7 @@
       }
     },
     {
-      "id": 63,
+      "id": 77,
       "name": "099_01_04B_import_encounter_without_status_original",
       "enabled": true,
       "file": "099_01_04B_importazione_encounter_ihub_hc40_adt_without_status_original.js",
@@ -831,7 +997,7 @@
       }
     },
     {
-      "id": 64,
+      "id": 78,
       "name": "099_01_delete_sio_impacted",
       "enabled": true,
       "file": "099_01_delete_sio_impacted.js",
@@ -846,7 +1012,7 @@
       }
     },
     {
-      "id": 65,
+      "id": 79,
       "name": "099_02_01_delete_encounter_from_without_status_original",
       "enabled": true,
       "file": "099_02_01_delete_encounter_from_without_status_original.js",
@@ -860,7 +1026,7 @@
       }
     },
     {
-      "id": 66,
+      "id": 80,
       "name": "099_02_01B_insert_encounter_history_from_without_status_original",
       "enabled": true,
       "file": "099_02_01B_insert_encounter_history_from_without_status_original.js",
@@ -877,7 +1043,7 @@
       }
     },
     {
-      "id": 67,
+      "id": 81,
       "name": "099_02_02_insert_encounter_without_status_modified",
       "enabled": true,
       "file": "099_02_02_insert_encounter_without_status_modified.js",
@@ -891,7 +1057,7 @@
       }
     },
     {
-      "id": 68,
+      "id": 82,
       "name": "099_02_03_rename_collection_encounter_without_status_original_to_backup",
       "enabled": true,
       "file": "099_02_03_rename_collection_encounter_without_status_original_to_backup.js",
@@ -903,7 +1069,7 @@
       }
     },
     {
-      "id": 69,
+      "id": 83,
       "name": "099_02_04_rename_collection_encounter_without_status_modified_to_backup",
       "enabled": true,
       "file": "099_02_04_rename_collection_encounter_without_status_modified_to_backup.js",
@@ -913,6 +1079,14 @@
         "targetCollection": "bonifica_encounter_without_status_modified_inserted_bck",
         "dropTargetIfExists": true
       }
+    },
+    {
+      "id": 84,
+      "name": "void", 
+      "enabled": true,
+      "file": "199_99_void.js",
+      "timeoutSec": 0,
+      "params": {}
     }
   ]
 }
