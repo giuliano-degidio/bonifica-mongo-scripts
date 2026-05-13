@@ -36,7 +36,11 @@ Per rilanciare tutto da zero (nuovo `runId`):
 ```bash
 ./run_pipeline.sh --config pipeline/pipeline_all_script.json --env k8s-bonifica --rerun-all
 ```
+Per rilanciare tutto da zero indicando il runid:
 
+```bash
+./run_pipeline.sh --config pipeline/pipeline_all_script.json --env k8s-bonifica --rerun-all --run-id NOME_RUN_ID
+```
 Esecuzione specificando un env (template):
 
 ```bash
