@@ -9,6 +9,9 @@ function fmtDuration(ms) {
   const ss = s % 60;
   return `${h}h ${m}m ${ss}s`;
 }
+function collectionExists(name) {
+  return db.getCollectionNames().includes(name) || db.getCollectionInfos({ name }).length > 0;
+}
 
 (async () => {
   const { runtime, context } = readRuntimeAndContext();
@@ -26,8 +29,11 @@ function fmtDuration(ms) {
   const dryRun = params.dryRun ?? false;
 
   const startMs = Date.now();
-  log(`START: SOURCE_COLL=${sourceColl} | TARGET_COLL=${targetColl} | DRY_RUN=${dryRun} | BULK_DELETE=${bulkDelete} | LOG_EVERY_DELETES=${logEveryDeletes}`);
-
+  if (!collectionExists(sourceColl)) {
+    log(`ATTENZIONE: source collection ${sourceColl} non trovata, script saltato senza errore.`);
+    return;
+  }
+  
   try {
     const source = db.getCollection(sourceColl);
     const target = db.getCollection(targetColl);

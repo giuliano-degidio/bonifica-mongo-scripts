@@ -73,7 +73,8 @@ function fmtDuration(ms) {
 
       out.write(EJSON.stringify(doc, { relaxed: true }) + "\n");
       count++;
-
+     if (docLimit === -1) break; // <--- SE docLimit=-1 NON PRODUCE RISULTATI
+	 
       if (docLimit > 0 && count >= docLimit) break;
 
       if (logEvery > 0 && count % logEvery === 0) {

@@ -4,10 +4,14 @@ function now() { return new Date().toISOString(); }
 function log(msg) { print(`[${now()}] ${msg}`); }
 function fmtDuration(ms) {
   const s = Math.floor(ms / 1000);
-  const h = Math.floor(s / 3600);
+  const h = Math.floor(ms / 3600);
   const m = Math.floor((s % 3600) / 60);
   const ss = s % 60;
   return `${h}h ${m}m ${ss}s`;
+}
+
+function collectionExists(name) {
+  return db.getCollectionNames().includes(name) || db.getCollectionInfos({ name }).length > 0;
 }
 
 (function main() {
@@ -29,6 +33,13 @@ function fmtDuration(ms) {
   log(`START: sourceCollection=${sourceCollection} targetCollection=${targetCollection} dryRun=${dryRun} bulkDelete=${bulkDelete} logEveryDeletes=${logEveryDeletes}`);
 
   try {
+    // ATTENZIONE: se la sorgente non esiste --> SKIP
+    if (!collectionExists(sourceCollection)) {
+      log(`SKIP: sourceCollection not found: ${sourceCollection} (nessuna operazione eseguita)`);
+      log(`END: status=SKIP elapsed=${fmtDuration(Date.now() - startMs)}`);
+      quit(0);
+    }
+
     const source = db.getCollection(sourceCollection);
     const target = db.getCollection(targetCollection);
 

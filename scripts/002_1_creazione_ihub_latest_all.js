@@ -113,7 +113,12 @@ function buildOp(doc, mode) {
   log(`TOTAL_IMPORTED: ${imported}`);
   log(`LINES_READ: ${lines} | SKIPPED_EMPTY: ${skippedEmpty}`);
   log(`END import | elapsed=${fmtDuration(endMs - startMs)} | coll=${coll}`);
-
+   if (imported === 0) {
+     // crea collection vuota scrivendo e subito eliminando un record fittizio
+     db.getCollection(coll).insertOne({_dummy: true});
+     db.getCollection(coll).deleteMany({_dummy: true});
+     log(`Collezione ${coll} creata vuota (prima non esisteva).`);
+   }
   print(
     JSON.stringify({
       type: "result",

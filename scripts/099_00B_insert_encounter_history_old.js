@@ -6,7 +6,7 @@ function now() { return new Date().toISOString(); }
 function log(msg) { print(`[${now()}] ${msg}`); }
 function fmtDuration(ms) {
   const s = Math.floor(ms / 1000);
-  const h = Math.floor(ms / 3600);
+  const h = Math.floor(s / 3600);
   const m = Math.floor((s % 3600) / 60);
   const ss = s % 60;
   return `${h}h ${m}m ${ss}s`;
@@ -33,10 +33,8 @@ function makeHistoryId(oldId, msSuffix) {
 
   const params = context?.params || {};
 
-  // MODIFICA: Usare solo il file con SIO_IHUB_HC40_ADT_KEYS
-  // Path fisso come da tua richiesta (puoi parametrizzare se serve)
-  const idsFileNameMap = params.idsFileNameMap || "sio_ihub_hc40_adt_keys_map.js";
-  const idsPathMap = path.join(expDir, String(runId || "no-runid"), idsFileNameMap);
+  const idsFileName = params.idsFileName || "sio_modified_id.js";
+  const idsFileNameHc40Adt = params.idsFileNameHc40Adt || "sio_modified_id_hc40_adt.js";
 
   const sourceCollection = params.sourceCollection || "encounter";
   const historyCollection = params.historyCollection || "encounter_history";
@@ -52,25 +50,27 @@ function makeHistoryId(oldId, msSuffix) {
 
   const exportKeys = params.exportKeys ?? true;
   const exportConstName = params.exportConstName || "ENCOUNTER_HISTORY_INSERTED_ID";
+  //const exportFilePrefix = params.exportFilePrefix || "encounter_history_inserted_id";
   const exportFilePrefix = (params.exportFilePrefix || "encounter_history_inserted_id").replace(/_+$/, "");
 
   const outDir = path.join(expDir, String(runId || "no-runid"));
   fs.mkdirSync(outDir, { recursive: true });
 
-  // Solo come info, non realmente più usati:
-  // const idsPath = path.join(outDir, idsFileName);
-  // const idsPathHc40 = path.join(outDir, idsFileNameHc40Adt);
+  const idsPath = path.join(outDir, idsFileName);
+  const idsPathHc40 = path.join(outDir, idsFileNameHc40Adt);
 
+ // const exportFile = path.join(outDir, `${exportFilePrefix}${new Date().toISOString().replace(/[:.]/g, "-")}.js`);
   const exportFile = path.join(outDir, `${exportFilePrefix}.js`);
 
   const startMs = Date.now();
-  log(`START: idsPathMap=${idsPathMap} sourceCollection=${sourceCollection} historyCollection=${historyCollection} batchIds=${batchIds} bulkWrite=${bulkWrite} logEvery=${logEvery} runSuffix=${runSuffix} exportKeys=${exportKeys}`);
+  log(`START: idsPath=${idsPath} idsPathHc40=${idsPathHc40} sourceCollection=${sourceCollection} historyCollection=${historyCollection} batchIds=${batchIds} bulkWrite=${bulkWrite} logEvery=${logEvery} runSuffix=${runSuffix} exportKeys=${exportKeys}`);
 
   let exportStream = null;
   let exportedIds = 0;
 
   try {
-    if (!fs.existsSync(idsPathMap)) throw new Error(`File non trovato: ${idsPathMap}`);
+    if (!fs.existsSync(idsPath)) throw new Error(`File non trovato: ${idsPath}`);
+    if (!fs.existsSync(idsPathHc40)) throw new Error(`File non trovato: ${idsPathHc40}`);
 
     if (exportKeys) {
       exportStream = fs.createWriteStream(exportFile, { encoding: "utf8", flags: "w" });
@@ -81,22 +81,22 @@ function makeHistoryId(oldId, msSuffix) {
       exportStream.write(`const ${exportConstName} = [\n`);
     }
 
-    // Carica solo il file con la mappa
-    load(idsPathMap); // Definisce SIO_IHUB_HC40_ADT_KEYS
+    load(idsPath);
+    load(idsPathHc40);
+
+    assertArray("SIO_MODIFIED_ID", SIO_MODIFIED_ID);
+    assertArray("SIO_MODIFIED_ID_HC40_ADT", SIO_MODIFIED_ID_HC40_ADT);
+
+    const idsMerged = []
+      .concat(SIO_MODIFIED_ID)
+      .concat(SIO_MODIFIED_ID_HC40_ADT)
+      .filter((x) => typeof x === "string" && x.length > 0);
 
 
+    const idsUnique = Array.from(new Set(idsMerged));
 
-    assertArray("SIO_IHUB_HC40_ADT_KEYS", SIO_IHUB_HC40_ADT_KEYS);
-
-    // Estrarre solo la parte prima di #
-    const idsClean = SIO_IHUB_HC40_ADT_KEYS
-      .map(x => typeof x === "string" && x.includes("#") ? x.split("#")[0].trim() : null)
-      .filter(x => !!x);
-    const idsUnique = Array.from(new Set(idsClean));
-
-    log(`IDS_LOADED: SIO_IHUB_HC40_ADT_KEYS=${SIO_IHUB_HC40_ADT_KEYS.length}`);
-    log(`IDS_CLEANED: cleaned=${idsClean.length} unique=${idsUnique.length}`);
-
+    log(`IDS_LOADED: SIO_MODIFIED_ID=${SIO_MODIFIED_ID.length} SIO_MODIFIED_ID_HC40_ADT=${SIO_MODIFIED_ID_HC40_ADT.length}`);
+    log(`IDS_MERGED: merged=${idsMerged.length} unique=${idsUnique.length}`);
 
     const source = db.getCollection(sourceCollection);
     const history = db.getCollection(historyCollection);
@@ -166,7 +166,7 @@ function makeHistoryId(oldId, msSuffix) {
       type: "result",
       script: "099_00B_insert_encounter_history.js",
       runId, stepId, dbName,
-      outDir, idsPathMap,
+      outDir, idsPath, idsPathHc40,
       sourceCollection, historyCollection,
       runSuffix,
       batchIds, bulkWrite, logEvery,

@@ -4,7 +4,7 @@ function now() { return new Date().toISOString(); }
 function log(msg) { print(`[${now()}] ${msg}`); }
 function fmtDuration(ms) {
   const s = Math.floor(ms / 1000);
-  const h = Math.floor(s / 3600);
+  const h = Math.floor(ms / 3600);
   const m = Math.floor((s % 3600) / 60);
   const ss = s % 60;
   return `${h}h ${m}m ${ss}s`;
@@ -29,7 +29,12 @@ function collectionExists(name) {
   log(`START: sourceCollection=${sourceCollection} targetCollection=${targetCollection} dropTargetIfExists=${dropTargetIfExists}`);
 
   try {
-    if (!collectionExists(sourceCollection)) throw new Error(`Source collection non trovata: ${sourceCollection}`);
+    // ATTENZIONE: se la sorgente non esiste --> SKIP & exit(0)
+    if (!collectionExists(sourceCollection)) {
+      log(`SKIP: sourceCollection not found: ${sourceCollection} (nessuna operazione eseguita)`);
+      log(`END: status=SKIP elapsed=${fmtDuration(Date.now() - startMs)}`);
+      quit(0);
+    }
 
     const renameStart = Date.now();
     log(`RENAME_START: ${sourceCollection} -> ${targetCollection}`);

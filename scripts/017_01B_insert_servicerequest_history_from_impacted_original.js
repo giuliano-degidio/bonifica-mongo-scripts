@@ -54,7 +54,16 @@ function makeHistoryId(oldId, msSuffix) {
   let exportedIds = 0;
 
   try {
-    if (!collectionExists(sourceColl)) throw new Error(`Source collection not found: ${sourceColl}`);
+    //if (!collectionExists(sourceColl)) throw new Error(`Source collection not found: ${sourceColl}`);
+    if (!collectionExists(sourceColl)) {
+          log(`ATTENZIONE: source collection ${sourceColl} non trovata, script saltato senza errore.`);
+          if (exportStream) {
+            try { exportStream.write("];\n"); } catch (_) {}
+            try { exportStream.end(); } catch (_) {}
+          }
+          return; 
+       }	
+	
     if (!collectionExists(historyColl)) log(`WARNING: history collection ${historyColl} not found (will be created on first insert)`);
 
     if (exportKeys) {
@@ -87,7 +96,7 @@ function makeHistoryId(oldId, msSuffix) {
 
       const newDoc = Object.assign({}, doc);
       newDoc._id = makeHistoryId(doc._id, runSuffix);
-      newDoc.request = "BONIFICA";
+      newDoc.request = "BONIFICA RunID: " + (runId ?? "ND");
 
       if (exportStream) {
         exportStream.write(`  ${JSON.stringify(String(newDoc._id))},\n`);

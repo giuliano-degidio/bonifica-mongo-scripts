@@ -35,8 +35,9 @@ function askYesNoBlocking(question) {
   const expDir = context?.paths?.expDir || runtime?.paths?.expDir || "/data/Mongo_Sh_Script/EXP";
   const params = context?.params || {};
 
-  const idsFileName = params.idsFileName || "sio_modified_id.js";
-  const idsFileNameHc40Adt = params.idsFileNameHc40Adt || "sio_modified_id_hc40_adt.js";
+  // Modifica: usa solo il file delle chiavi mappate  
+  const idsFileNameMap = params.idsFileNameMap || "sio_ihub_hc40_adt_keys_map.js";
+  const idsPathMap = path.join(expDir, String(runId || "no-runid"), idsFileNameMap);
 
   const targetCollection = params.targetCollection || "encounter";
   const batchIds = params.batchIds ?? 1000;
@@ -46,31 +47,25 @@ function askYesNoBlocking(question) {
   const outDir = path.join(expDir, String(runId || "no-runid"));
   fs.mkdirSync(outDir, { recursive: true });
 
-  const idsPath = path.join(outDir, idsFileName);
-  const idsPathHc40 = path.join(outDir, idsFileNameHc40Adt);
-
   const startMs = Date.now();
-  log(`START: idsPath=${idsPath} idsPathHc40=${idsPathHc40} targetCollection=${targetCollection} batchIds=${batchIds} logEveryDeletes=${logEveryDeletes} requireConfirmation=${requireConfirmation}`);
+  log(`START: idsPathMap=${idsPathMap} targetCollection=${targetCollection} batchIds=${batchIds} logEveryDeletes=${logEveryDeletes} requireConfirmation=${requireConfirmation}`);
 
   try {
-    if (!fs.existsSync(idsPath)) throw new Error(`File non trovato: ${idsPath}`);
-    if (!fs.existsSync(idsPathHc40)) throw new Error(`File non trovato: ${idsPathHc40}`);
+    if (!fs.existsSync(idsPathMap)) throw new Error(`File non trovato: ${idsPathMap}`);
 
-    load(idsPath);
-    load(idsPathHc40);
+    load(idsPathMap);
 
-    assertArray("SIO_MODIFIED_ID", SIO_MODIFIED_ID);
-    assertArray("SIO_MODIFIED_ID_HC40_ADT", SIO_MODIFIED_ID_HC40_ADT);
+    assertArray("SIO_IHUB_HC40_ADT_KEYS", SIO_IHUB_HC40_ADT_KEYS);
 
-    const idsMerged = []
-      .concat(SIO_MODIFIED_ID)
-      .concat(SIO_MODIFIED_ID_HC40_ADT)
-      .filter((x) => typeof x === "string" && x.length > 0);
+    // Prendi solo la parte prima di #
+    const idsClean = SIO_IHUB_HC40_ADT_KEYS
+      .map(x => typeof x === "string" && x.includes("#") ? x.split("#")[0].trim() : null)
+      .filter(x => !!x);
 
-    const idsUnique = Array.from(new Set(idsMerged));
+    const idsUnique = Array.from(new Set(idsClean));
 
-    log(`IDS_LOADED: SIO_MODIFIED_ID=${SIO_MODIFIED_ID.length} SIO_MODIFIED_ID_HC40_ADT=${SIO_MODIFIED_ID_HC40_ADT.length}`);
-    log(`IDS_MERGED: merged=${idsMerged.length} unique=${idsUnique.length}`);
+    log(`IDS_LOADED: SIO_IHUB_HC40_ADT_KEYS=${SIO_IHUB_HC40_ADT_KEYS.length}`);
+    log(`IDS_CLEANED: cleaned=${idsClean.length} unique=${idsUnique.length}`);
 
     if (requireConfirmation) {
       log("WARNING: Questa operazione CANCELLERA' DEFINITIVAMENTE documenti dalla collezione target.");
@@ -116,7 +111,7 @@ function askYesNoBlocking(question) {
       type: "result",
       script: "099_01_delete_sio_impacted.js",
       runId, stepId, dbName,
-      outDir, idsPath, idsPathHc40,
+      outDir, idsPathMap,
       targetCollection,
       batchIds, logEveryDeletes,
       requireConfirmation,

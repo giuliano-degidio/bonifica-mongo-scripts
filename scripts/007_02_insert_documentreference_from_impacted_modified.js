@@ -31,8 +31,16 @@ function collectionExists(name) {
   log(`START: SOURCE_COLL=${sourceColl} | TARGET_COLL=${targetColl} | MODE=${mode} | BATCH=${batch} | LOG_EVERY=${logEvery}`);
 
   try {
-    if (!collectionExists(sourceColl)) throw new Error(`Sorgente non trovata: ${sourceColl}`);
-
+	
+    try {
+      if (!collectionExists(sourceColl)) {
+        log(`ATTENZIONE: source collection ${sourceColl} non trovata, script saltato senza errore.`);
+        return;
+      }
+    } catch (e) {
+      log(`ERRORE nella guardia sulla collection: ${e && e.stack ? e.stack : e}`);
+      return;
+    }
     const source = db.getCollection(sourceColl);
     const target = db.getCollection(targetColl);
 
